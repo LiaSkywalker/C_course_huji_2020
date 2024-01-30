@@ -1,0 +1,144 @@
+Name:Nitzan Rosen
+ID:208564641
+CS-USER:nitzanrosen
+
+SpreaderDetectorBackend
+-----------------------------
+Please explain how you dealt with the following parts of the exam.
+
+Input processing
+----------------
+
+--arguments and reading--
+first of all, I checked that I had received a suitable number of inputs.
+Then, during the reading attempt I tried to open them, and if the file did not exist-
+I exited the program in orderly way.
+I assumed that the content of the files is correct, as written in the exercise instructions.
+I saved the information from the files in a dynamic array of two types that I defined:
+People, Meeting.
+The memory is released by a special function, which is always called when exiting the program.
+Each file was read line-by-line until the end, when I converted each line to the appropriate format.
+(separate the different fields by whitespace)
+
+--Error handling hierarchy--
+Transfer success / failure status of functions to above level functions.
+In cases of functions that cannot return value because they return something else,
+I have set a global FLAG variable that will be updated if an error occurs.
+
+--global variables-
+I used a global variable for frequently called numeric fields.
+It's more convenient than transferring their copies at every functions calling.
+
+--pointers--
+I used pointers a lot, to pass references to fields (such as the arrays that store the information).
+It helps me access the memory I have allocated from all sorts of places in the code
+
+Data storing
+------------
+
+-dynamic array-
+I saved the information from the files in a dynamic array of two types that I defined:
+People, Meeting.
+the size of the array changing dynamically, using realloc when needed.
+
+-Meeting type-
+include data from the meeting input file.
+it's fields are: spreaderId,InfectedId,distance,time. (data from single meeting)
+
+-People type-
+include data from the people input file.
+it's include fields of: name, age, id in the array, and of course- "probability to get sick".
+
+each people and meeting is initialize during the reading process.
+special function updates the probability from the meeting, for every people.
+
+--string in my code--
+I set the field of the person's name to be a char*.
+I didn't set a predetermined memory size for it.
+During the reading I malloc a memory to storage the name.
+the size was the amount of chars I need +1  (for the "\0" character at the end of the string).
+so, that I use exactly the amount of memory I need. and save memory.
+Of course at exit the program, I release this memory.
+
+after importing the data I need from the files and storage it, I need to calculate
+ the updated probabilities.
+first I sort the People array by their id.
+after that I iterate the meetings array, and calculate by order the updated probability.
+In order to approach the right person and update it's probability,
+I use Binary Search on the id field.
+
+When this process done, I have updated probability for every person.
+
+-runtime-
+At first, I implemented an algorithm that executes this part in O(m*p^2)
+But I was able to reduce the run time by using binary search :)
+
+the runtime of this part: O(m*log(p) + p*log(p))
+binary search takes log(n), then update the probability for every person will take: m*log(p)
+also, the merge sort will take: p*log(p)
+
+Results sorting
+---------------
+
+To return the people according to the chances of infection in descending order,
+ I sorted the list of people according to the field of chances of infection.
+ (I use the same sorting algorithm as before. the only change is the "merge" part.
+   so, I create spacial merge function for every sorting, and call the suit one by enum)
+
+I used a Merge-sort version that sorts in-place.
+
+The sorting is based on the sorting I submitted in the first exercise in this course,
+ with adjustments to the current exercise.
+
+The general idea of mergeSort -
+a recursive call to sort on sub-arrays of the array that is sorted on it,
+until reaching a single cell.
+Then connect any two sorted sub-arrays to one array that will be sorted as well.
+The depth of the recursion tree is O(logn) and at each stage n work is done,
+so in total, the run time of the sorting is O(nlogn)
+
+                                               ./oyyyyyyyyo:`
+                                            `/yy+-``   ```-+yy:
+                       `-//++++++++/-      -hs.             `-yh-
+                     .+o:.`       `./s+.  /m: `:+so+-         `+m:
+                   `oo.              `:y+-N: /mNMMMMNh-         om.
+                  `y/`                 `ymh -NMMMMMMMMm         `No`
+                  yo            ```     `ms :MMMMMMMMMm          dy`        .:.
+                 .N`         `+hmmmds-   oh  oNMMMMMMm:         `Nh:------:ddNy`
+                 :N         `dMMMMMMMN/  /N:  -+yhhs/.          oNyhdmmmmdhhsms...`
+                 -M-        +MMMMMMMMMm  shm:                 `+Nyoooosssoooymhhhhdo.
+                  hh`       -NMMMMMMMMs :doyms.             `-ymsoooooooooooosooooyhd/
+             `:.` -mh.       :hNMMMNmo`/dsooshdy/-``    `.-+hdyooooooooooooooooooosyNm:
+             yhysyyyyh+.       .:/:-.-shoooooooyhdhhyyyyhddhsoooooooooooooooooooooooymd/-.
+          `..ddysooooosys+-.````..:oyysooooooooooooossssoooooooooooooooooooooooooooooohmdm
+        ./ymhdysooooooooosyyyysyyyysoooooooooooooooooooooooooooooooooooooooooooooysoosdmNN
+      `+mmhsoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooymsoooshm
+      smmdmsoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooosyhhhsooooos
+`-.`.oysyysooooooooooooooooooooooooooooooooooooooooooooosooooooooooooooooooydmdyooooooooos
+oNmmhyyoooooooooooooooooooooooooooooooooooooooohNNNdhsoohmmddysooooymmmmmmmMdsoooooooooooh
+.ddysoooooooooooooooooooooooooooooooooooyhoosmNMMMMMMMNNNMMMMMNmmmmNMMMMMMMmoooooooooooooo
+ :yNNhooooooooooooooooooooooooooooooosydMmdmMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMhoooooooooooooo
+  oMhoosNdooooooooooooosdoooohNhyyyhdNMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMyoooooooooooooh
+ omNsoohMNhysooooooooymMdhdmMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMsooooooooooooos
+ sMsoooysshhdddhhhmNNMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMmooooooooooooooo
+ oMsooooooooooshmMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMsooooooooooooooo
+ sMyyooooooooooooymMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMdoooooooooooooooo
+ `ymNsooooooooooooohNMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMsooooooooooooohym
+  .+MdooooooooooooooyNMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMhooooooooooooosMNy
+   `+MhoooooooooooooosNMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMdooooooooooooosmM+`
+    `sMyooooooooooooooyNMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMhoooooooooooooosMy.
+     .hNooooooooooooooosmMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMNyooooooooooooooooMo`
+      :MsossooooooooooooohNMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMNhsooooooooooooooyssM/
+     `yNsyNhooooooooooooooshNMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMNhsooooooooooooooooddhMo`
+     `dmmNhNoooooooooooooooosymNMMMMMMMMMMMMMMMMMMMMMMMMMMMMMNdysoooooooooooooooosdmddh/`
+      .:/:.mhooooooooooooooooooshmNMMMMMMMMMMMMMMMMMMMMMMNmdysooooooooooooooooooydd:```
+           .ydsooooooooooooooooooosyhdmNNNMMMMMMMMNNNmdhysooooooooooooooooooyysymh:
+            .yNdyyhoooooooooooooooooooosssyyyyyyyysssoooooooooooooooooooooymmmdy/`
+             `+hdNNyoooooooooooooooooooooooooooooooooooooooooooooooooooooyNh:-.`
+               `./NMmsoooooooooooooooooooooooooooooooooooooooooooosssoshdd+.
+                  -yNmysyyssoooosoooooooooooooooooooooooooooooooshmNdyho:`
+                   `:hmNNdmmdhssmmhsooooooooooooooooooooosoosssdmy/:-``
+                      .::.`/ohNhNmmNdhyssyhhsooooooossydmmdddyss:`
+                             `:/:.`-+hNddmhddhhhhddddhs/-....`
+                                      ``````````....``
+good luck :)
